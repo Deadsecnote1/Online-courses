@@ -1,0 +1,40 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Next.js build output
+/.next/
+/out/
+/build
+
+# Production & Environment secrets
+.env
+.env*.local
+.env.production
+.env.staging
+
+# Testing & Coverage artifacts
+/playwright-report/
+/test-results/
+/coverage/
+*.lcov
+
+# System & Temporary files
+.DS_Store
+*.pem
+*.tsbuildinfo
+next-env.d.ts
+all_notes.txt
+
+# Firebase & Vercel Caches
+.firebase/
+firebase-debug.log*
+firebase-debug.*.log*
+.vercel/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
