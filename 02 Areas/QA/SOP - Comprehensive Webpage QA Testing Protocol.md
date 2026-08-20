@@ -111,10 +111,16 @@ curl -X POST "http://localhost:3000/api/report-expired" \
   -d '{"course_id":"udemy-py-2026-001","reason":"expired_code","notes":"Shows $12.99"}'
 # Expected: 200 OK JSON with incremented report_count.
 
-# 3. Test Sync Pipeline Endpoint
+# 3. Test Sync Pipeline Endpoint (admin key or CRON_SECRET)
 curl -X POST "http://localhost:3000/api/sync-coupons" \
-  -H "Authorization: Bearer demo-cron-secret"
-# Expected: 200 OK JSON with active_courses & expired_cleaned stats.
+  -H "Authorization: Bearer admin123"
+# Expected: 200 OK JSON with newIngested, active_courses, expired_cleaned.
+
+# 3b. Unknown report ID must 404
+curl -X POST "http://localhost:3000/api/report-expired" \
+  -H "Content-Type: application/json" \
+  -d '{"course_id":"does-not-exist"}'
+# Expected: 404 { "success": false }
 
 # 4. Test Admin Auth Endpoint
 curl -X POST "http://localhost:3000/api/admin/auth" \
@@ -142,9 +148,13 @@ curl -X POST "http://localhost:3000/api/admin/auth" \
 
 ## 4. Master QA Execution Checklist Sign-Off
 
-- [x] All 15 Homepage Test Cases (`TC-HP-01` to `TC-HP-15`) Verified PASS.
-- [x] All 13 Admin Portal Test Cases (`TC-ADM-01` to `TC-ADM-13`) Verified PASS.
-- [x] All 4 Ad Container Test Cases (`TC-AD-01` to `TC-AD-04`) Verified PASS.
-- [x] All 4 Legal Compliance Test Cases (`TC-LEG-01` to `TC-LEG-04`) Verified PASS.
-- [x] All 4 API Endpoint cURL Contracts Verified PASS.
-- [x] Next.js Production Build (`npm run build`) Zero Errors Sign-Off.
+Live execution is in [[SOP - Manual QA Execution Runbook]]. Do not tick these until that runbook is finished.
+
+- [x] Homepage session verified
+- [x] Card / modal / report session verified
+- [x] Ads + responsive session verified
+- [x] Legal session verified
+- [x] Admin session verified
+- [x] API / 404 / console session verified
+
+Signed: 19 Aug 2026 via [[SOP - Manual QA Execution Runbook]] (tester: all PASS).

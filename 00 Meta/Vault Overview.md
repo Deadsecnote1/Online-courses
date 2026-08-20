@@ -1,61 +1,96 @@
-# 🧠 Obsidian Second Brain - Free Course Platform Knowledge Vault
+# 🧠 Obsidian Second Brain - Free Course Platform
 
-#meta #dashboard #overview
+#meta #dashboard #overview #para
 
-Welcome to the **Free Course Platform Second Brain**, structured following the **PARA Method** (Projects, Areas, Resources, Archives).
-
----
-
-## 🗂️ Vault Structure & Master Index
-
-### 📁 `01 Projects/` (Short-term efforts with a specific goal and deadline)
-- [[P01 - Free Course Website MVP]] — Sprint backlog, component hierarchy, legal compliance tasks, scraper pipeline integration, and deployment checklists.
-
-### 📁 `02 Areas/` (Long-term responsibilities to maintain over time)
-- [[SOP - Git Hygiene and Firebase Deployment]] — Git index cleaning guide, `.gitignore` rules, `firebase.json` config, and GitHub Actions deploy workflow.
-- [[SOP - QA Test Execution & Audit Report]] — Final QA audit report with 100% test execution pass log, route compilation audit, and sign-off.
-- [[SOP - Admin Operations and Revenue Guide]] — Master A-Z guide explaining admin setup, Rakuten/AdSense approval steps, daily broadcast operations, and revenue generation.
-- [[SOP - Comprehensive Webpage QA Testing Protocol]] — Complete QA testing protocol covering every webpage, component, test criteria, and API endpoint.
-- [[SOP - Automated Sourcing Pipeline]] — Data feed sources, 6-12h cron frequencies, auto-expiration rules (>48h or ≥3 user reports), and manual override SOP.
-
-### 📁 `03 Resources/` (Topics and interest areas for reference)
-- [[Architecture - Monetization and Ad Placements]] — Google AdSense container specifications, Rakuten Udemy deep-link URL generator specs, and secondary affiliate widgets.
-- [[Swipe File - Broadcast Templates]] — Copywriting templates for Telegram and WhatsApp daily drops, category roundups, and UTM parameter matrix.
+Knowledge vault for the **Free Course Platform** (PARA method).  
+**Infrastructure:** Vercel (host) + Firebase Spark (Firestore). Start here → [[P03 - Launch Plan (Vercel + Firebase Spark)]].
 
 ---
 
-## 🔗 Related Notes Map
+## 🗂️ Vault structure
+
+### `00 Meta/`
+| Note | Purpose |
+| :--- | :--- |
+| [[Vault Overview]] | This page — master index |
+
+### `01 Projects/` — time-bound outcomes
+| Note | Purpose |
+| :--- | :--- |
+| [[P01 - Free Course Website MVP]] | Product built; feature backlog & DoD |
+| [[P02 - Revenue Plan and Unit Economics]] | Monetization after launch |
+| [[P03 - Launch Plan (Vercel + Firebase Spark)]] | **Step-by-step go-live ($0 stack)** |
+
+### `02 Areas/` — ongoing responsibilities
+
+**DevOps/**
+| Note | Purpose |
+| :--- | :--- |
+| [[SOP - Git Hygiene and Release]] | Git, Vercel deploy, Firestore rules, GitHub Actions |
+| [[SOP - Automated Sourcing Pipeline]] | Coupon ingest → Firestore, 6h cron |
+
+**Operations/**
+| Note | Purpose |
+| :--- | :--- |
+| [[SOP - Admin Operations and Revenue Guide]] | `/admin`, broadcasts, revenue ops |
+
+**QA/**
+| Note | Purpose |
+| :--- | :--- |
+| [[SOP - Manual QA Execution Runbook]] | Live manual test sessions |
+| [[SOP - Comprehensive Webpage QA Testing Protocol]] | Master test case catalog |
+| [[SOP - QA Test Execution & Audit Report]] | Historical audit (superseded by runbook) |
+
+### `03 Resources/` — reference
+| Note | Purpose |
+| :--- | :--- |
+| [[Architecture - Platform Stack]] | Vercel + Firebase Spark blueprint |
+| [[Architecture - Monetization and Ad Placements]] | Ads, Rakuten, affiliate slots |
+| [[Swipe File - Broadcast Templates]] | Telegram / WhatsApp copy + UTMs |
+
+---
+
+## 🔗 System map
 
 ```mermaid
 graph TD
-    VO["[[Vault Overview]]"] --> P1["[[P01 - Free Course Website MVP]]"]
-    VO --> DEVOPS["[[SOP - Git Hygiene and Firebase Deployment]]"]
-    VO --> REPORT["[[SOP - QA Test Execution & Audit Report]]"]
-    VO --> ADMIN["[[SOP - Admin Operations and Revenue Guide]]"]
-    VO --> QA["[[SOP - Comprehensive Webpage QA Testing Protocol]]"]
-    VO --> SOP["[[SOP - Automated Sourcing Pipeline]]"]
-    VO --> MON["[[Architecture - Monetization and Ad Placements]]"]
-    VO --> SWIPE["[[Swipe File - Broadcast Templates]]"]
-    
-    DEVOPS -.->|Deploys Application| P1
-    REPORT -.->|Audit Sign-Off| QA
-    QA -.->|Verifies Webpages & APIs| P1
-    QA -.->|Verifies Admin UI| ADMIN
-    ADMIN -.->|Executes Ingestion| SOP
-    ADMIN -.->|Manages Revenue| MON
-    ADMIN -.->|Sends Broadcasts| SWIPE
-    P1 -.->|Implements Pipeline| SOP
-    P1 -.->|Integrates Ads & Affiliates| MON
-    P1 -.->|Drives Traffic From| SWIPE
-    SWIPE -.->|Uses UTMs & Links| MON
+    VO["[[Vault Overview]]"]
+    P3["[[P03 - Launch Plan (Vercel + Firebase Spark)]]"]
+    STACK["[[Architecture - Platform Stack]]"]
+    P1["[[P01 - Free Course Website MVP]]"]
+    P2["[[P02 - Revenue Plan and Unit Economics]]"]
+    REL["[[SOP - Git Hygiene and Release]]"]
+    PIPE["[[SOP - Automated Sourcing Pipeline]]"]
+    ADMIN["[[SOP - Admin Operations and Revenue Guide]]"]
+    QA["[[SOP - Manual QA Execution Runbook]]"]
+    MON["[[Architecture - Monetization and Ad Placements]]"]
+
+    VO --> P3
+    VO --> STACK
+    VO --> P1
+    VO --> P2
+    P3 --> STACK
+    P3 --> REL
+    REL --> PIPE
+    P1 --> QA
+    P1 --> P2
+    ADMIN --> PIPE
+    ADMIN --> MON
+    P2 --> MON
 ```
 
 ---
 
-## 🛠️ Tech Stack & Automation Quick Reference
-- **Frontend:** Next.js (App Router), TypeScript, Tailwind CSS, Fuse.js
-- **Admin Control:** Dedicated Admin Dashboard (`/admin`)
-- **Deployment:** Firebase Hosting + GitHub Actions (`.github/workflows/firebase-deploy.yml`)
-- **Scraper:** Node.js / TypeScript (`scripts/scrape-coupons.ts`)
-- **CI/CD Automation:** GitHub Actions (`.github/workflows/sync-coupons.yml`)
-- **Monetization:** Google AdSense + Rakuten Advertising (Udemy MID: `13884`)
+## 🛠️ Tech stack (quick reference)
+
+| Layer | Technology |
+| :--- | :--- |
+| App | Next.js 15, TypeScript, Tailwind, Fuse.js |
+| Hosting | **Vercel** (Hobby / free) |
+| Database | **Firebase Spark** — Firestore `courses` |
+| Admin | `/admin` + `firebase-admin` |
+| CI | GitHub Actions: `firestore-rules.yml`, `sync-coupons.yml` |
+| Firebase project ID | `free-course-platform` |
+| Monetization | Rakuten + AdSense (see P02) |
+
+**Not in use:** Firebase Hosting (requires Blaze for this Next.js app).

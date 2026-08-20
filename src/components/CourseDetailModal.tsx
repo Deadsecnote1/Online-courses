@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Course } from '@/types/course';
 import { formatTimeRemaining, formatPrice } from '@/utils/affiliate';
+import { getPublicSiteOrigin, getSecondaryOfferUrl } from '@/utils/offers';
 import { X, Star, Clock, Copy, Check, ExternalLink, Flag, Globe, Award, BookOpen, Send, MessageCircle, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -35,13 +36,20 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
     window.open(course.destination_url, '_blank', 'noopener,noreferrer');
   };
 
+  const dealUrl = `${getPublicSiteOrigin()}/course/${course.id}`;
   const shareText = encodeURIComponent(
-    `🔥 100% FREE UDEMY COURSE: ${course.title}\nGrab it for $0 before coupon expires!\n👉 Claim here: https://courses.domain.com/course/${course.id}`
+    `🔥 100% FREE UDEMY COURSE: ${course.title}\nGrab it for $0 before coupon expires!\n👉 Claim here: ${dealUrl}`
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full my-8 overflow-hidden shadow-2xl relative">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto"
+      onClick={onClose}
+    >
+      <div
+        className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full my-8 overflow-hidden shadow-2xl relative"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -145,8 +153,8 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
               </div>
             </div>
             <a
-              href="https://click.linksynergy.com"
-              target="_blank"
+              href={getSecondaryOfferUrl('vpn')}
+              target={getSecondaryOfferUrl('vpn').startsWith('http') ? '_blank' : undefined}
               rel="noopener noreferrer"
               className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-indigo-300 whitespace-nowrap"
             >
@@ -176,7 +184,7 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
             <div className="flex items-center gap-2">
               <span className="text-slate-500">Share deal:</span>
               <a
-                href={`https://t.me/share/url?url=${encodeURIComponent(`https://courses.domain.com/course/${course.id}`)}&text=${shareText}`}
+                href={`https://t.me/share/url?url=${encodeURIComponent(dealUrl)}&text=${shareText}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-1.5 rounded-lg bg-sky-500/10 text-sky-400 hover:bg-sky-500/20"

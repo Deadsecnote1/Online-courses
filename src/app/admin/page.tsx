@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Course } from '@/types/course';
 import { AdminHeader } from '@/components/AdminHeader';
 import { formatTimeRemaining, formatPrice, generateUdemyAffiliateUrl } from '@/utils/affiliate';
+import { getPublicSiteOrigin } from '@/utils/offers';
 import { ShieldCheck, KeyRound, Plus, RefreshCw, AlertTriangle, Check, Copy, Trash2, Zap, Star, Search, Flame, Send, MessageCircle, Lock, Sparkles, Filter } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -37,6 +38,7 @@ export default function AdminPage() {
   const [formFeatured, setFormFeatured] = useState(false);
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [formSuccessMsg, setFormSuccessMsg] = useState('');
+  const [formErrorMsg, setFormErrorMsg] = useState('');
 
   // On mount check saved auth key
   useEffect(() => {
@@ -145,12 +147,16 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/sync-coupons', {
         method: 'POST',
-        headers: { Authorization: `Bearer demo-cron-secret` },
+        headers: { Authorization: `Bearer ${adminKey}` },
       });
       const data = await res.json();
       if (data.success) {
-        setSyncMessage(`Synced ${data.total_courses} courses (${data.active_courses} active, ${data.expired_cleaned} expired)`);
+        setSyncMessage(
+          `Synced ${data.total_courses} courses (${data.active_courses} active, ${data.newIngested} new, ${data.expired_cleaned} expired)`
+        );
         fetchAdminCourses(adminKey);
+      } else {
+        setSyncMessage(data.error || 'Pipeline sync error');
       }
     } catch (e) {
       setSyncMessage('Pipeline sync error');
@@ -164,6 +170,7 @@ export default function AdminPage() {
     e.preventDefault();
     setFormSubmitting(true);
     setFormSuccessMsg('');
+    setFormErrorMsg('');
 
     try {
       const res = await fetch('/api/admin/courses', {
@@ -196,9 +203,12 @@ export default function AdminPage() {
         setFormCoupon('');
         setFormUrl('');
         setActiveTab('manage');
+      } else {
+        setFormErrorMsg(data.error || 'Failed to add course');
       }
     } catch (err) {
       console.error('Add course error:', err);
+      setFormErrorMsg('Failed to add course');
     } finally {
       setFormSubmitting(false);
     }
@@ -206,7 +216,8 @@ export default function AdminPage() {
 
   // Broadcast Telegram / WhatsApp Draft Copy Generator
   const handleCopyBroadcastDraft = (course: Course) => {
-    const postText = `🔥 [100% FREE UDEMY COURSE ALERT] 🔥\n\n🎓 Course: ${course.title}\n⭐ Rating: ${course.rating.toFixed(1)} | 💰 Price: $0 ($${course.original_price} Value)\n🔑 Coupon Code: ${course.coupon_code}\n\n⏰ Claim before coupon expires:\n👉 https://courses.domain.com/course/${course.id}?utm_source=telegram&utm_medium=broadcast`;
+    const origin = getPublicSiteOrigin();
+    const postText = `🔥 [100% FREE UDEMY COURSE ALERT] 🔥\n\n🎓 Course: ${course.title}\n⭐ Rating: ${course.rating.toFixed(1)} | 💰 Price: $0 ($${course.original_price} Value)\n🔑 Coupon Code: ${course.coupon_code}\n\n⏰ Claim before coupon expires:\n👉 ${origin}/course/${course.id}?utm_source=telegram&utm_medium=broadcast`;
 
     navigator.clipboard.writeText(postText);
     setCopiedCourseId(course.id);
@@ -527,6 +538,11 @@ export default function AdminPage() {
             {formSuccessMsg && (
               <div className="p-4 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold">
                 ✓ {formSuccessMsg}
+              </div>
+            )}
+            {formErrorMsg && (
+              <div className="p-4 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-semibold">
+                {formErrorMsg}
               </div>
             )}
 

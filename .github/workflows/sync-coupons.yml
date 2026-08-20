@@ -1,0 +1,29 @@
+name: Sync Free Udemy Coupons
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync-coupons:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Ingest into Firestore
+        env:
+          NEXT_PUBLIC_RAKUTEN_PUB_ID: ${{ secrets.RAKUTEN_PUB_ID }}
+          FIREBASE_PROJECT_ID: free-course-platform
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FREE_COURSE }}
+        run: npx tsx scripts/scrape-coupons.ts

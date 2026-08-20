@@ -6,6 +6,9 @@ export default defineConfig({
     environment: 'node',
     globals: true,
     include: ['tests/unit/**/*.test.ts'],
+    env: {
+      CATALOG_DRIVER: 'memory',
+    },
   },
   resolve: {
     alias: {

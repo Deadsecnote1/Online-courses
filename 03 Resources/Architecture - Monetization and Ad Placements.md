@@ -5,7 +5,9 @@
 > **Document Type:** Architecture & Monetization Blueprint  
 > **Resource Category:** Revenue Engineering & Ad Unit Placement  
 > **Target Partners:** Google AdSense, Rakuten Advertising (Udemy), Secondary Affiliate Platforms (Impact, CJ, Direct)  
+> **Platform stack:** [[Architecture - Platform Stack]]  
 > **Parent Project:** [[P01 - Free Course Website MVP]]  
+> **Revenue Plan (cash model):** [[P02 - Revenue Plan and Unit Economics]]  
 > **Pipeline SOP:** [[SOP - Automated Sourcing Pipeline]]  
 > **Broadcast Templates:** [[Swipe File - Broadcast Templates]]  
 > **Master Index:** [[Vault Overview]]
@@ -38,6 +40,16 @@ Udemy Deals          Secondary Tools          In-Feed Cards          Sticky Bann
 ## 2. Google AdSense Container Specifications & Ad Placement Zones
 
 To maximize eCPM while maintaining Core Web Vitals (CLS < 0.1), all ad units are allocated fixed-aspect responsive container wrappers (`min-height` reserved) to prevent layout shifts.
+
+`AD_ZONE_SIDEBAR` is mounted on the homepage at `xl` as a sticky column (`AdBanner type="sidebar"`). Secondary CTAs read:
+
+```env
+NEXT_PUBLIC_AFFILIATE_VPS_URL
+NEXT_PUBLIC_AFFILIATE_VPN_URL
+NEXT_PUBLIC_AFFILIATE_TOOLS_URL
+```
+
+If unset, href is `#` (no fake LinkShare root). Display units are still mock containers, not live `adsbygoogle`.
 
 ### Ad Unit Map & Technical Specs
 

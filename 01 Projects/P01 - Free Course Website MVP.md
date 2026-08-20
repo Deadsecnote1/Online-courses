@@ -7,7 +7,8 @@
 ---
 
 ## 1. Project Metadata
-- **Status:** 🚀 Active (In Development)
+- **Status:** ✅ MVP built — launch via [[P03 - Launch Plan (Vercel + Firebase Spark)]] (Vercel + Firestore). Revenue: [[P02 - Revenue Plan and Unit Economics]].
+- **Hosting:** [[Architecture - Platform Stack|Vercel]] · **DB:** Firebase Spark Firestore
 - **Target Launch:** Q3 2026
 - **Primary Tech Stack:** Next.js (App Router), TypeScript, Tailwind CSS, Fuse.js, Node.js Scraper
 - **Monetization Engine:** Google AdSense (Display Units) + Rakuten Advertising (Udemy Affiliate Deep Links)
@@ -15,6 +16,8 @@
 - **Web Admin Portal:** [[SOP - Admin Operations and Revenue Guide|Web Dashboard (/admin)]]
 - **Related SOP:** [[SOP - Automated Sourcing Pipeline]]
 - **Monetization Blueprint:** [[Architecture - Monetization and Ad Placements]]
+- **Revenue Plan:** [[P02 - Revenue Plan and Unit Economics]]
+- **Launch Plan:** [[P03 - Launch Plan (Vercel + Firebase Spark)]]
 - **Social Swipe File:** [[Swipe File - Broadcast Templates]]
 - **Master Index:** [[Vault Overview]]
 
@@ -64,15 +67,19 @@
 - [x] `/affiliate-disclosure` Route: FTC compliance disclosure regarding affiliate link commissions
 
 ### Phase 6: Automated Sourcing & Pipeline Integration
-- [x] Sourcing Script (`scripts/scrape-coupons.ts`) targeting RSS/JSON feeds from coupon aggregators
-- [x] Automatic Udemy coupon code extraction & Rakuten affiliate link wrapper (`https://click.linksynergy.com/...`)
-- [x] Expiration Engine: Auto-expire courses > 48 hours old or flagged by ≥ 3 user reports
-- [x] GitHub Actions Workflow (`.github/workflows/sync-coupons.yml`) running every 6 hours
+- [x] Shared catalog: Firestore `courses` (Admin SDK) with memory fallback for tests / offline dev
+- [x] Pipeline module (`src/lib/couponPipeline.ts`) **actually appends** new coupons; CLI + `POST /api/sync-coupons`
+- [x] Coupon regex extraction + Rakuten wrap; expire on `expires_at` or `report_count >= 3`
+- [x] GitHub Actions validates CLI and optionally POSTs the live site (`SITE_URL` + `CRON_SECRET`)
+- [x] Share/deal route `/course/[id]`; footer category query `/?category=`
+- [x] Search respects category and hides expired deals (`filterDirectory`)
 
 ---
 
 ## 3. Definition of Done (DoD)
 1. **Performance:** Lighthouse Score > 90 for Mobile & Desktop (LCP < 2.5s, CLS < 0.1).
-2. **Reliability:** 0 broken affiliate redirects; scraper succeeds cleanly on 6h cron triggers.
-3. **Admin Control:** Dedicated `/admin` route allows non-technical deal posting and moderation.
+2. **Reliability:** Public catalog is the API catalog; sync ingest is real in-process; unknown IDs return 404.
+3. **Admin Control:** Dedicated `/admin` route allows deal posting, moderation, and authenticated pipeline sync.
 4. **Compliance:** FTC affiliate disclosure banner visible on all pages; privacy policy fully accessible.
+
+**Still not done:** real RSS feeds; partner IDs for revenue. Catalog persists in Firestore. See [[SOP - Automated Sourcing Pipeline]] and [[P03 - Launch Plan (Vercel + Firebase Spark)]].

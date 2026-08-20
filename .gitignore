@@ -27,7 +27,8 @@
 next-env.d.ts
 all_notes.txt
 
-# Firebase & Vercel Caches
+# Firebase service account keys
+*firebase-adminsdk*.json
 .firebase/
 firebase-debug.log*
 firebase-debug.*.log*

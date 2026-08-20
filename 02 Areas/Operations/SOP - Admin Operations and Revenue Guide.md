@@ -46,7 +46,7 @@ Broadcast Channels (Telegram / WhatsApp)
 The platform includes a browser-based Admin Console at **`/admin`** for complete hands-free management:
 
 ### Accessing the Dashboard
-1. Open `https://courses.domain.com/admin` (or `http://localhost:3000/admin` locally).
+1. Open `https://YOUR-VERCEL-URL/admin` (or `http://localhost:3000/admin` locally).
 2. Enter your **Admin Secret Key** (Default key: `admin123` or value set in `.env.local` `ADMIN_SECRET_KEY`).
 
 ### Dashboard Features & Capabilities
@@ -70,28 +70,42 @@ The platform includes a browser-based Admin Console at **`/admin`** for complete
 
 Before launching traffic broadcasts, complete this checklist:
 
-### Step 1: Rakuten Advertising Affiliate Registration
-1. Register an account on [Rakuten Advertising Publisher Portal](https://rakutenadvertising.com/).
-2. Apply to the **Udemy Affiliate Program** (Merchant ID: `13884`).
-3. Once approved, copy your unique **Publisher ID (MID)** token from the portal dashboard.
-4. Add your Publisher ID to `.env.local` or Vercel Environment Variables:
+### Step 1: Infrastructure (Vercel + Firebase Spark)
+
+Complete [[P03 - Launch Plan (Vercel + Firebase Spark)]] first. Minimum env vars:
+
+```env
+FIREBASE_PROJECT_ID=free-course-platform
+FIREBASE_SERVICE_ACCOUNT={"type":"service_account",...}
+ADMIN_SECRET_KEY=your_secure_admin_password_here
+CRON_SECRET=your_cron_secret_here
+NEXT_PUBLIC_SITE_URL=https://your-app.vercel.app
+```
+
+Set the same keys in **Vercel** → Project → Environment Variables (Production).
+
+### Step 2: Rakuten Advertising Affiliate Registration
+1. Register at [Rakuten Advertising](https://rakutenadvertising.com/).
+2. Apply to **Udemy** (Merchant ID `13884`).
+3. Add to Vercel + `.env.local`:
    ```env
-   NEXT_PUBLIC_RAKUTEN_PUB_ID=your_rakuten_publisher_id_here
-   ADMIN_SECRET_KEY=your_secure_admin_password_here
+   NEXT_PUBLIC_RAKUTEN_PUB_ID=your_publisher_id
+   NEXT_PUBLIC_AFFILIATE_VPN_URL=https://...
+   NEXT_PUBLIC_AFFILIATE_VPS_URL=https://...
+   NEXT_PUBLIC_AFFILIATE_TOOLS_URL=https://...
    ```
 
-### Step 2: Google AdSense Setup & Approval
-1. Deploy the site to your custom domain.
-2. Ensure legal pages ([`/privacy-policy`](file:///home/thanushiyan/Desktop/free-course/src/app/privacy-policy/page.tsx), [`/terms-of-service`](file:///home/thanushiyan/Desktop/free-course/src/app/terms-of-service/page.tsx), [`/affiliate-disclosure`](file:///home/thanushiyan/Desktop/free-course/src/app/affiliate-disclosure/page.tsx)) are indexed and accessible.
-3. Submit site domain in [Google AdSense Console](https://adsense.google.com/).
-4. Add your AdSense Publisher ID to `src/components/AdBanner.tsx`:
-   ```tsx
-   data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-   ```
+### Step 3: Google AdSense (optional)
+1. Use your **Vercel production URL** or custom domain.
+2. Legal pages must be live: `/privacy-policy`, `/terms-of-service`, `/affiliate-disclosure`.
+3. Apply in [AdSense Console](https://adsense.google.com/).
+4. If approved, add publisher ID to `AdBanner.tsx`.
 
-### Step 3: Automated Cron Setup (GitHub Actions)
-1. Add `CRON_SECRET` to GitHub Repository Secrets (`Settings > Secrets and variables > Actions`).
-2. Verify `.github/workflows/sync-coupons.yml` triggers every 6 hours automatically.
+### Step 4: Automated coupon sync (GitHub Actions)
+1. GitHub secret `FIREBASE_SERVICE_ACCOUNT_FREE_COURSE` = service account JSON.
+2. Firestore enabled on project `free-course-platform` (Spark plan OK).
+3. Workflow `sync-coupons.yml` runs every 6 hours.
+4. Rules deploy via `firestore-rules.yml` when `firestore.rules` changes.
 
 ---
 
@@ -100,7 +114,7 @@ Before launching traffic broadcasts, complete this checklist:
 ### Morning Routine (09:00 AM)
 1. Open `/admin` dashboard.
 2. Click **"Reset Flags"** or **"Force Expire"** on items reported by users.
-3. Click **"Sync Scraper Pipeline"** to pull fresh deals.
+3. Click **"Sync Scraper Pipeline"** (sends the admin key; ingest + expire run on the live process). Refresh `/` to see new deals.
 
 ### Broadcast Drop (12:00 PM & 06:00 PM Peak Traffic Hours)
 1. In `/admin` course catalog table, click **"Draft"** next to any top course.
@@ -110,12 +124,15 @@ Before launching traffic broadcasts, complete this checklist:
 
 ## 5. Revenue Pipeline & Payout Execution
 
+The full model (unit economics, partner order, $1,000 math, go-live checklist) lives in [[P02 - Revenue Plan and Unit Economics]]. This SOP only covers the **daily** loop after money switches are on.
+
+**Do not scale broadcasts until P02 R0 is done** (real Rakuten ID, real secondary offer URLs, analytics). Traffic without those IDs is unpaid.
+
 ```mermaid
 timeline
-    title Path to First $1,000 Revenue
-    Day 1 - 3 : Setup & Deployment : Custom domain connected, Next.js deployed on Vercel, /admin route secured.
-    Day 4 - 7 : Partner Registrations : Rakuten Advertising approval (Udemy MID: 13884), AdSense snippet activated.
-    Day 8 - 14 : Audience Growth : Launch Telegram & WhatsApp channels, reach 1,000 active subscribers.
-    Day 15 - 30 : Daily Operations & Scaling : Use /admin 1-click broadcast generator for 2x daily drops.
-    Day 30+ : Revenue Payouts : AdSense monthly payout ($100 threshold) + Rakuten affiliate commissions.
+    title Path to first $1,000 (see P02 for visit × RPM math)
+    R0 : Switch on money : Domain, Rakuten apply, VPN/VPS URLs, GA4, admin PIN
+    R1 : First dollars : Secondary EPC + tiny Udemy cookie; 2x daily drops
+    R2 : Repeatable RPM : 600-1000 visits/day, same admin cadence
+    R3 : Run-rate : 1200+ visits/day; AdSense only if approved
 ```

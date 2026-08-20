@@ -19,12 +19,14 @@ export const ReportModal: React.FC<ReportModalProps> = ({
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
   if (!course) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    setError('');
 
     try {
       const res = await fetch('/api/report-expired', {
@@ -44,17 +46,26 @@ export const ReportModal: React.FC<ReportModalProps> = ({
           onSuccess(course.id, data.report_count, data.is_expired);
           onClose();
         }, 1500);
+      } else {
+        setError(data.error || 'Report failed');
       }
     } catch (err) {
       console.error('Report submission failed:', err);
+      setError('Report failed');
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
@@ -129,6 +140,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               />
             </div>
 
+            {error && <p className="text-xs text-amber-400">{error}</p>}
             <div className="flex gap-3 pt-2">
               <button
                 type="button"

@@ -1,0 +1,26 @@
+name: Deploy Firestore Rules
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'firestore.rules'
+      - 'firestore.indexes.json'
+      - 'firebase.json'
+      - '.github/workflows/firestore-rules.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy_rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy Firestore rules and indexes
+        env:
+          FIREBASE_SERVICE_ACCOUNT_FREE_COURSE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FREE_COURSE }}
+        run: |
+          echo "$FIREBASE_SERVICE_ACCOUNT_FREE_COURSE" > "$HOME/firebase-sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$HOME/firebase-sa.json"
+          npx --yes firebase-tools deploy --only firestore --project free-course-platform --non-interactive

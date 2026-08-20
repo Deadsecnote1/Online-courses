@@ -5,7 +5,7 @@
 > **Document Type:** QA Test Execution & Audit Report  
 > **Platform Version:** v1.0.0 (MVP Release)  
 > **Audit Date:** August 2026  
-> **Execution Status:** 🟢 100% PASSED (0 Failures, 0 Warnings)  
+> **Execution Status:** ⚠️ SUPERSEDED — do not treat as current sign-off. Re-run [[SOP - Manual QA Execution Runbook]] session by session.  
 > **Parent Project:** [[P01 - Free Course Website MVP]]  
 > **Test Protocol:** [[SOP - Comprehensive Webpage QA Testing Protocol]]  
 > **Master Index:** [[Vault Overview]]

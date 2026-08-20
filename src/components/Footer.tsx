@@ -2,12 +2,18 @@ import React from 'react';
 import Link from 'next/link';
 import { Shield, Sparkles, BookOpen, ExternalLink } from 'lucide-react';
 
+const DOMAIN_LINKS: { href: string; label: string }[] = [
+  { href: '/?category=Development', label: 'Python & Software Dev' },
+  { href: '/?category=IT%20%26%20Security', label: 'Ethical Hacking & Cyber Security' },
+  { href: '/?category=IT%20%26%20Security', label: 'AWS & Cloud DevOps' },
+  { href: '/?category=Design', label: 'UI/UX & Figma Design' },
+  { href: '/?category=Marketing', label: 'Digital Marketing & SEO' },
+];
+
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-slate-950 border-t border-slate-800/80 text-slate-400 text-xs py-12 px-4 mt-20">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-        
-        {/* Brand Column */}
         <div className="space-y-3 md:col-span-1">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">
@@ -22,29 +28,40 @@ export const Footer: React.FC = () => {
           </p>
         </div>
 
-        {/* Categories */}
         <div>
           <h4 className="font-bold text-slate-200 mb-3 uppercase tracking-wider text-[11px] font-mono">Popular Domains</h4>
           <ul className="space-y-2">
-            <li><Link href="/" className="hover:text-indigo-300 transition-colors">Python & Software Dev</Link></li>
-            <li><Link href="/" className="hover:text-indigo-300 transition-colors">Ethical Hacking & Cyber Security</Link></li>
-            <li><Link href="/" className="hover:text-indigo-300 transition-colors">AWS & Cloud DevOps</Link></li>
-            <li><Link href="/" className="hover:text-indigo-300 transition-colors">UI/UX & Figma Design</Link></li>
-            <li><Link href="/" className="hover:text-indigo-300 transition-colors">Digital Marketing & SEO</Link></li>
+            {DOMAIN_LINKS.map((item) => (
+              <li key={item.label}>
+                <Link href={item.href} className="hover:text-indigo-300 transition-colors">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
-        {/* Compliance Pages */}
         <div>
           <h4 className="font-bold text-slate-200 mb-3 uppercase tracking-wider text-[11px] font-mono">Legal & Compliance</h4>
           <ul className="space-y-2">
-            <li><Link href="/privacy-policy" className="hover:text-indigo-300 transition-colors flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-slate-500" /> Privacy Policy</Link></li>
-            <li><Link href="/terms-of-service" className="hover:text-indigo-300 transition-colors">Terms of Service</Link></li>
-            <li><Link href="/affiliate-disclosure" className="hover:text-indigo-300 transition-colors">Affiliate Disclosure</Link></li>
+            <li>
+              <Link href="/privacy-policy" className="hover:text-indigo-300 transition-colors flex items-center gap-1.5">
+                <Shield className="w-3.5 h-3.5 text-slate-500" /> Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms-of-service" className="hover:text-indigo-300 transition-colors">
+                Terms of Service
+              </Link>
+            </li>
+            <li>
+              <Link href="/affiliate-disclosure" className="hover:text-indigo-300 transition-colors">
+                Affiliate Disclosure
+              </Link>
+            </li>
           </ul>
         </div>
 
-        {/* Second Brain & System Docs */}
         <div>
           <h4 className="font-bold text-slate-200 mb-3 uppercase tracking-wider text-[11px] font-mono">System Architecture</h4>
           <p className="text-slate-400 mb-3 text-xs leading-relaxed">
@@ -56,13 +73,13 @@ export const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Trademark Disclaimer */}
       <div className="max-w-7xl mx-auto pt-8 border-t border-slate-900 text-center space-y-2 text-slate-500">
-        <p>
-          Disclaimer: Udemy is a trademark of Udemy, Inc. This platform is an independent aggregator publishing publicly shared promotional discount codes.
+        <p>Disclaimer: Udemy is a trademark of Udemy, Inc. This site is not endorsed by Udemy.</p>
+        <p className="flex items-center justify-center gap-1.5">
+          <BookOpen className="w-3.5 h-3.5" /> Independent coupon aggregator. Not affiliated with Udemy, Inc. except via advertising networks.
         </p>
-        <p>
-          © {new Date().getFullYear()} Free Course Aggregator. All rights reserved. Affiliate links powered by Rakuten Advertising.
+        <p className="flex items-center justify-center gap-1.5">
+          <ExternalLink className="w-3.5 h-3.5" /> Some links are affiliate links. See our disclosure for details.
         </p>
       </div>
     </footer>

@@ -8,6 +8,7 @@
 > **Goal:** High Click-Through Rate (CTR) driving users directly to web course landing pages.  
 > **Parent Project:** [[P01 - Free Course Website MVP]]  
 > **Monetization Reference:** [[Architecture - Monetization and Ad Placements]]  
+> **Revenue Plan:** [[P02 - Revenue Plan and Unit Economics]]  
 > **Pipeline SOP:** [[SOP - Automated Sourcing Pipeline]]  
 > **Master Index:** [[Vault Overview]]
 
