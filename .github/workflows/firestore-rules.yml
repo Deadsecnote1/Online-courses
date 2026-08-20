@@ -17,10 +17,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy Firestore rules and indexes
+      - name: Check service account secret
         env:
           FIREBASE_SERVICE_ACCOUNT_FREE_COURSE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FREE_COURSE }}
         run: |
-          echo "$FIREBASE_SERVICE_ACCOUNT_FREE_COURSE" > "$HOME/firebase-sa.json"
-          export GOOGLE_APPLICATION_CREDENTIALS="$HOME/firebase-sa.json"
-          npx --yes firebase-tools deploy --only firestore --project free-course-platform --non-interactive
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT_FREE_COURSE" ]; then
+            echo "::error::Secret FIREBASE_SERVICE_ACCOUNT_FREE_COURSE is empty or missing."
+            echo "Add it under Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          echo "$FIREBASE_SERVICE_ACCOUNT_FREE_COURSE" | python3 -c "import sys,json; json.load(sys.stdin); print('Service account JSON: OK')"
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FREE_COURSE }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Deploy Firestore rules and indexes
+        run: npx --yes firebase-tools@13 deploy --only firestore --project free-course-platform --non-interactive

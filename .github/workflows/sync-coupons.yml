@@ -12,6 +12,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Check service account secret
+        env:
+          FIREBASE_SERVICE_ACCOUNT_FREE_COURSE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FREE_COURSE }}
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT_FREE_COURSE" ]; then
+            echo "::error::Secret FIREBASE_SERVICE_ACCOUNT_FREE_COURSE is empty or missing."
+            exit 1
+          fi
+          echo "$FIREBASE_SERVICE_ACCOUNT_FREE_COURSE" | python3 -c "import sys,json; json.load(sys.stdin); print('Service account JSON: OK')"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
